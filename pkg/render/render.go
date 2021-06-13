@@ -9,6 +9,7 @@ import (
 	"text/template"
 
 	"github.com/k3forx/golang-basic-app/pkg/config"
+	"github.com/k3forx/golang-basic-app/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -19,7 +20,11 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		// Get the template cache from the app config
@@ -33,9 +38,11 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 		log.Fatal("Could not get template from template cache")
 	}
 
+	td = AddDefaultData(td)
+
 	buf := new(bytes.Buffer)
 
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, td)
 
 	_, err := buf.WriteTo(w)
 	if err != nil {
