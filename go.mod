@@ -1,3 +1,3 @@
-module github.com/k4forx/golang-basic-app
+module github.com/k3forx/golang-basic-app
 
 go 1.16
